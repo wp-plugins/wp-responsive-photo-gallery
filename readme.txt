@@ -19,7 +19,7 @@ Admin can add,edit and delete slider images.Before add responsive gallery to wor
 
 **Find WordPress Responsive Photo Gallery Pro Plugin (Unlimited Photo Gallary+Much more fatures) at [WordPress Responsive Photo Gallery Pro Plugin](http://www.i13websolution.com/wordpress-pro-plugins/wordpress-responsive-photo-gallery-pro-plugin.html)**
 
-**[Live Demo WordPress Responsive Photo Gallery pro](www.i13websolution.com/wpdemo/responsive-photo-gallery-pro-demo/)**
+**[Live Demo WordPress Responsive Photo Gallery pro](http://www.i13websolution.com/wpdemo/responsive-photo-gallery-pro-demo/)**
 
 **Please rate this plugin if you find it useful**
 
