@@ -179,7 +179,9 @@
                 </td>
                 </tr>
                 </table>
-                
+               <div style="clear:both">
+                    <span><h3 style="color: blue;"><a target="_blank" href="http://www.i13websolution.com/wordpress-pro-plugins/wordpress-responsive-photo-gallery-pro-plugin.html">UPGRADE TO PRO VERSION</a></h3></span>
+                </div>     
               <?php
                     $messages=get_option('my_responsive_photo_gallery_slider_settings_messages'); 
                     $type='';
@@ -555,6 +557,7 @@
       
    ?> 
      <div class="wrap">
+        
          <!--[if !IE]><!-->
         <style type="text/css">
         
@@ -651,6 +654,9 @@
                 </td>
                 </tr>
                 </table>
+                <div style="clear:both">
+                    <span><h3 style="color: blue;"><a target="_blank" href="http://www.i13websolution.com/wordpress-pro-plugins/wordpress-responsive-photo-gallery-pro-plugin.html">UPGRADE TO PRO VERSION</a></h3></span>
+                 </div>   
                  
         <?php 
              
@@ -979,7 +985,9 @@
                      $image_name='';
 
                  ?>
-                 <span><h3 style="color: blue;"><a target="_blank" href="http://www.i13websolution.com/wordpress-pro-plugins/wordpress-responsive-photo-gallery-pro-plugin.html">UPGRADE TO PRO VERSION</a></h3></span>
+                 <div style="clear:both">
+                    <span><h3 style="color: blue;"><a target="_blank" href="http://www.i13websolution.com/wordpress-pro-plugins/wordpress-responsive-photo-gallery-pro-plugin.html">UPGRADE TO PRO VERSION</a></h3></span>
+                 </div>   
                  <h2>Add Image </h2>
                  <?php } ?>
 
@@ -1258,6 +1266,8 @@
  ?>      
    <div style="">  
         <div style="">
+            <br/>
+            <span><h3 style="color: blue;"><a target="_blank" href="http://www.i13websolution.com/wordpress-pro-plugins/wordpress-responsive-photo-gallery-pro-plugin.html">UPGRADE TO PRO VERSION</a></h3></span>
             <div class="wrap">
                     <h2>Slider Preview</h2>
             <br>
