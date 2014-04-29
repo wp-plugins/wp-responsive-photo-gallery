@@ -7,7 +7,7 @@
     Author:I Thirteen Web Solution
     Version:1.0
     */
-
+    error_reporting(0);
     $dir = plugin_dir_path( __FILE__ );
     $dir=str_replace("\\","/",$dir);
     if(!class_exists('resize')){
