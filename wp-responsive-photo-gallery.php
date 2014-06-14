@@ -1427,10 +1427,14 @@
                                                         return;
                                                     }
                                                     oldsize_w<?php echo $galRandNo;?>=width;
+                                                    var resizeToHeight=width/3*2;
+                                                    if(resizeToHeight><?php echo $settings['panel_height'];?>){
+                                                        resizeToHeight=<?php echo $settings['panel_height'];?>;  
+                                                    }
                                                     thumbfactor = width/(<?php echo $settings['panel_width'];?>-10);
 
                                                     $j(item).resizeGalleryView(
-                                                        width,width/3*2, <?php echo $settings['frame_width'];?>*thumbfactor, <?php echo $settings['frame_height'];?>*thumbfactor);
+                                                        width,resizeToHeight, <?php echo $settings['frame_width'];?>*thumbfactor, <?php echo $settings['frame_height'];?>*thumbfactor);
 
                                             });
                                         }
@@ -1611,11 +1615,15 @@
                                         return;
                                     }
                                     oldsize_w<?php echo $galRandNo;?>=width;
+                                    var resizeToHeight=width/3*2;
+                                    if(resizeToHeight><?php echo $settings['panel_height'];?>){
+                                        resizeToHeight=<?php echo $settings['panel_height'];?>;  
+                                    }
                                     thumbfactor = width/(<?php echo $settings['panel_width'];?>-10);
 
                                     $j(item).resizeGalleryView(
                                         width, 
-                                        width/3*2, <?php echo $settings['frame_width'];?>*thumbfactor, <?php echo $settings['frame_height'];?>*thumbfactor);
+                                        resizeToHeight, <?php echo $settings['frame_width'];?>*thumbfactor, <?php echo $settings['frame_height'];?>*thumbfactor);
 
                             });
                         }
