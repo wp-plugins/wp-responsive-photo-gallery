@@ -1,8 +1,8 @@
 <?php
     /* 
     Plugin Name: wp responsive photo gallery
-    Plugin URI:http://www.i13websolution.com
-    Author URI:http://www.i13websolution.com
+    Plugin URI:http://www.i13websolution.com/wordpress-responsive-photo-gallery-pro-plugin.html
+    Author URI:http://www.i13websolution.com/wordpress-responsive-photo-gallery-pro-plugin.html
     Description: This is beautiful responsive photo gallery + slider plugin for WordPress.Add any number of images from admin panel.
     Author:I Thirteen Web Solution
     Version:1.0
@@ -16,7 +16,7 @@
     } 
 
     add_action('admin_menu', 'add_my_responsive_photo_gallery_admin_menu');
-    add_action( 'admin_init', 'my_responsive_photo_gallery_admin_init' );
+    //add_action( 'admin_init', 'my_responsive_photo_gallery_admin_init' );
     register_activation_hook(__FILE__,'install_my_responsive_photo_gallery');
     add_action('wp_enqueue_scripts', 'my_responsive_photo_gallery_load_styles_and_js');
     add_shortcode('print_my_responsive_photo_gallery', 'print_my_responsive_photo_gallery_func' );
@@ -92,11 +92,15 @@
 
     function add_my_responsive_photo_gallery_admin_menu(){
 
-        add_menu_page( __( 'Responsive Photo Gallery'), __( 'Responsive Photo Gallery' ), 'administrator', 'responsive_photo_gallery_slider', 'responsive_photo_gallery_slider_admin_options' );
-        add_submenu_page( 'responsive_photo_gallery_slider', __( 'Slider Setting'), __( 'Slider Setting' ),'administrator', 'responsive_photo_gallery_slider', 'responsive_photo_gallery_slider_admin_options' );
-        add_submenu_page( 'responsive_photo_gallery_slider', __( 'Manage Images'), __( 'Manage Images'),'administrator', 'responsive_photo_gallery_image_management', 'responsive_photo_gallery_image_management' );
-        add_submenu_page( 'responsive_photo_gallery_slider', __( 'Preview Slider'), __( 'Preview Slider'),'administrator', 'responsive_photo_gallery_slider_preview', 'responsive_photo_gallery_slider_admin_preview' );
+        $hook_suffix_r_p=add_menu_page( __( 'Responsive Photo Gallery'), __( 'Responsive Photo Gallery' ), 'administrator', 'responsive_photo_gallery_slider', 'responsive_photo_gallery_slider_admin_options' );
+        $hook_suffix_r_p=add_submenu_page( 'responsive_photo_gallery_slider', __( 'Slider Setting'), __( 'Slider Setting' ),'administrator', 'responsive_photo_gallery_slider', 'responsive_photo_gallery_slider_admin_options' );
+        $hook_suffix_r_p_1=add_submenu_page( 'responsive_photo_gallery_slider', __( 'Manage Images'), __( 'Manage Images'),'administrator', 'responsive_photo_gallery_image_management', 'responsive_photo_gallery_image_management' );
+        $hook_suffix_r_p_2=add_submenu_page( 'responsive_photo_gallery_slider', __( 'Preview Slider'), __( 'Preview Slider'),'administrator', 'responsive_photo_gallery_slider_preview', 'responsive_photo_gallery_slider_admin_preview' );
 
+        
+        add_action( 'load-' . $hook_suffix_r_p , 'my_responsive_photo_gallery_admin_init' );
+        add_action( 'load-' . $hook_suffix_r_p_1 , 'my_responsive_photo_gallery_admin_init' );
+        add_action( 'load-' . $hook_suffix_r_p_2 , 'my_responsive_photo_gallery_admin_init' );
 
     }
 
