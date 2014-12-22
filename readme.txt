@@ -3,7 +3,7 @@ Contributors:nik00726
 Donate link: http://www.i13websolution.com/donate-wordpress_image_thumbnail.php
 Tags:wordpress responsive photo gallery,wordpress responsive gallery,wordpress responsive photo slideshow,wp responsive photo slideshow,wordpress responsive carousel gallery,wordpress responsive photo album slideshow
 Requires at least:3.0
-Tested up to:4.0
+Tested up to:4.1
 Version:1.0
 Stable tag:trunk
 License: GPLv2 or later
@@ -13,7 +13,7 @@ This is beautiful responsive photo gallery plugin for wordPress blogs and sites.
 
 == Description ==
 
-**Support Upto WordPress 4.0**
+**Support Upto WordPress 4.1**
 
 WordPress responsive photo gallery is beautiful photo thumbnail gallery with main image.Admin can manages any number of images into the photo gallery slider.
 Admin can add,edit and delete slider images.Before add responsive gallery to wordPress blog admin can preview a slider.Admin can set height,width of slider images and thumbnil images also.Admin can also set speed.Admin can also set if want to slide automatic slider or not and many other settings.

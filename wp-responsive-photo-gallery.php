@@ -1127,30 +1127,27 @@
                                 </script> 
 
                             </div>
-                            <div id="postbox-container-1" class="postbox-container" > 
-                                <div class="postbox"> 
-                                    <h3 class="hndle"><span></span>Best Hosting for WordPress</h3> 
-                                    <div class="inside">
-                                        <center><a href="http://www.siteground.com" onClick="this.href='http://www.siteground.com/wordpress-hosting.htm?afbannercode=2efd07dfb14877d963d9e75d5057b4a8'" ><img src="https://ua.siteground.com/img/banners/application/wordpress/250x250.gif" alt="Web Hosting" width="250" height="250" border="0"></a></center>
-
-                                        <div style="margin:10px 5px">
-
-                                        </div>
-                                    </div></div>
-                                <div class="postbox"> 
-                                    <h3 class="hndle"><span></span>Worried About SEO ?</h3> 
-                                    <div class="inside">
-                                        <center><a target="_blank" href="http://www.shareasale.com/r.cfm?b=531904&u=675922&m=41388&urllink=&afftrack="><img src="http://www.shareasale.com/image/41388/sas_banner_250x250.jpg" alt="WP Engine" border="0"></a></center>
-
-                                        <div style="margin:10px 5px">
-
-                                        </div>
-                                    </div></div>
-
-
-
-
-                            </div>
+                         <div id="postbox-container-1" class="postbox-container" > 
+					
+					          <div class="postbox"> 
+					              <h3 class="hndle"><span></span>Access All Themes In One Price</h3> 
+					              <div class="inside">
+					                  <center><a href="http://www.elegantthemes.com/affiliates/idevaffiliate.php?id=11715_0_1_10" target="_blank"><img border="0" src="http://www.elegantthemes.com/affiliates/banners/300x250.gif" width="250" height="250"></a></center>
+					
+					                  <div style="margin:10px 5px">
+					
+					                  </div>
+					              </div></div>
+					          <div class="postbox"> 
+					              <h3 class="hndle"><span></span>Recommended WordPress Hostings</h3> 
+					              
+					              <div class="inside">
+					                   <center><a href="http://secure.hostgator.com/~affiliat/cgi-bin/affiliates/clickthru.cgi?id=nik00726-hs-wp"><img src="http://tracking.hostgator.com/img/WordPress_Hosting/300x250-animated.gif" width="250" height="250" border="0"></a></center>
+					                  <div style="margin:10px 5px">
+					                  </div>
+					              </div></div>
+					
+					      </div> 
                         </div>
                     </div>  
 
