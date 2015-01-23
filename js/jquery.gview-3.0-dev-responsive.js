@@ -694,6 +694,7 @@ if (typeof Object.create !== 'function') {
         },
         
         showNext: function() {
+            
             this.navAction = 'next';
             this.showItem(this.frameIterator+1);
         },
@@ -746,6 +747,7 @@ if (typeof Object.create !== 'function') {
             
             switch(this.opts.panel_animation) {
                 case 'crossfade':
+                    
                     dom.gv_panels.eq(this.iterator).fadeOut(this.opts.transition_speed,function(){$(this).detach();});
                     panel.hide().prependTo(dom.gv_panelWrap).fadeIn(this.opts.transition_speed);
                     break;
@@ -789,9 +791,12 @@ if (typeof Object.create !== 'function') {
             this.updateFilmstrip(frame_i);
             this.showInfoBar();
             
+            
             if(document.getSelection){
-                document.getSelection().removeAllRanges(); // fixes selection of item
+               // document.getSelection().removeAllRanges(); // fixes selection of item
             }
+            
+            
         },
         
         updateOverlay: function(i) {
