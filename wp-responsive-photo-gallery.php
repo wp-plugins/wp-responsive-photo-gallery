@@ -21,6 +21,7 @@
     add_action('wp_enqueue_scripts', 'my_responsive_photo_gallery_load_styles_and_js');
     add_shortcode('print_my_responsive_photo_gallery', 'print_my_responsive_photo_gallery_func' );
     add_filter('widget_text', 'do_shortcode');
+    add_action ( 'admin_notices', 'wp_responsive_photo_gallery_admin_notices' );
 
     function my_responsive_photo_gallery_load_styles_and_js(){
 
@@ -84,12 +85,45 @@
 
             update_option('my_responsive_photo_gallery_slider_settings',$my_responsive_photo_gallery_slider_settings);
         } 
+        
+        
+        $uploads = wp_upload_dir ();
+        $baseDir = $uploads ['basedir'];
+        $baseDir = str_replace ( "\\", "/", $baseDir );
+        $pathToImagesFolder = $baseDir . '/wp-responsive-photo-gallery';
+        wp_mkdir_p ( $pathToImagesFolder );
 
     } 
 
 
 
-
+    function wp_responsive_photo_gallery_admin_notices(){
+        
+        if (is_plugin_active('wp-responsive-photo-gallery/wp-responsive-photo-gallery.php')) {
+            
+            $uploads = wp_upload_dir();
+            $baseDir=$uploads['basedir'];
+            $baseDir=str_replace("\\","/",$baseDir);
+            $pathToImagesFolder=$baseDir.'/wp-responsive-photo-gallery';
+            
+            if(file_exists($pathToImagesFolder) and is_dir($pathToImagesFolder)){
+                
+                if( !is_writable($pathToImagesFolder)){
+                        echo "<div class='updated'><p>Wp Responsive Photo Gallery is active but does not have write permission on</p><p><b>".$pathToImagesFolder."</b> directory.Please allow write permission.</p></div> ";
+                }       
+            }
+            else{
+               
+                  wp_mkdir_p($pathToImagesFolder);  
+                  if(!file_exists($pathToImagesFolder) and !is_dir($pathToImagesFolder)){
+                    echo "<div class='updated'><p>Wp Responsive Photo Gallery is active but plugin does not have permission to create directory</p><p><b>".$pathToImagesFolder."</b> .Please create wp-responsive-photo-gallery directory inside upload directory and allow write permission.</p></div> "; 
+                    
+                  }
+            }
+        }
+        
+    }
+    
     function add_my_responsive_photo_gallery_admin_menu(){
 
         $hook_suffix_r_p=add_menu_page( __( 'Responsive Photo Gallery'), __( 'Responsive Photo Gallery' ), 'administrator', 'responsive_photo_gallery_slider', 'responsive_photo_gallery_slider_admin_options' );
@@ -116,6 +150,8 @@
         wp_enqueue_script('jquery.easing.1.3',plugins_url('/js/jquery.easing.1.3.js', __FILE__));
         wp_enqueue_script('jquery.gview-3.0-dev-responsive',plugins_url('/js/jquery.gview-3.0-dev-responsive.js', __FILE__));
         wp_enqueue_script('jquery.validate',plugins_url('/js/jquery.validate.js', __FILE__));
+        
+        my_responsive_photo_gallery_admin_scripts_init();
 
 
     }
@@ -539,6 +575,15 @@
     }        
     function responsive_photo_gallery_image_management(){
 
+        
+        $uploads = wp_upload_dir ();
+        $baseDir = $uploads ['basedir'];
+        $baseDir = str_replace ( "\\", "/", $baseDir );
+        $pathToImagesFolder = $baseDir . '/wp-responsive-photo-gallery';
+        
+        $baseurl=$uploads['baseurl'];
+        $baseurl.='/wp-responsive-photo-gallery/';
+        
         $action='gridview';
         global $wpdb;
 
@@ -715,6 +760,7 @@
                                         <tr>
                                             <th class="manage-column column-cb check-column" scope="col"><input type="checkbox"></th>
                                             <th><span>Title</span></th>
+                                            <th><span></span></th>
                                             <th><span>Published On</span></th>
                                             <th><span>Edit</span></th>
                                             <th><span>Delete</span></th>
@@ -749,11 +795,15 @@
                                                     $id=$row['id'];
                                                     $editlink="admin.php?page=responsive_photo_gallery_image_management&action=addedit&id=$id";
                                                     $deletelink="admin.php?page=responsive_photo_gallery_image_management&action=delete&id=$id";
+                                                    $outputimgmain = $baseurl.$row['image_name']; 
 
                                                 ?>
                                                 <tr valign="top">
                                                     <td class="alignCenter check-column"   data-title="Select Record" ><input type="checkbox" value="<?php echo $row['id']; ?>" name="thumbnails[]"></td>
                                                     <td class="alignCenter" data-title="Title"><strong><?php echo stripslashes($row['title']) ?></strong></td>  
+                                                    <td class="alignCenter">
+                                                        <img src="<?php echo $outputimgmain;?>" style="width:50px" height="50px"/>
+                                                    </td> 
                                                     <td class="alignCenter" data-title="Published On"><?php echo $row['createdon'] ?></td>
                                                     <td class="alignCenter"   data-title="Edit"><strong><a href='<?php echo $editlink; ?>' title="edit">Edit</a></strong></td>  
                                                     <td class="alignCenter"   data-title="Delete"><strong><a href='<?php echo $deletelink; ?>' onclick="return confirmDelete();"  title="delete">Delete</a> </strong></td>  
@@ -844,7 +894,9 @@
                             $my_responsive_photo_gallery_slider_settings_messages['message']='Error while file uploading.';
                             update_option('my_responsive_photo_gallery_slider_settings_messages', $my_responsive_photo_gallery_slider_settings_messages);
 
+
                             echo "<script type='text/javascript'> location.href='$location';</script>";
+                            exit;
 
                         }
                         else{
@@ -854,12 +906,37 @@
                             $path_parts = pathinfo($_FILES["image_name"]["name"]);
                             $extension = $path_parts['extension'];       
                             $imagename=md5(time()).".$extension";
-                            $imageUploadTo=$wpcurrentdir.'/imagestoscroll/'.$imagename;
+                            $imageUploadTo=$pathToImagesFolder.'/'.$imagename;
                             move_uploaded_file($_FILES["image_name"]["tmp_name"],$imageUploadTo); 
 
+                        }
+                    }
+                    else if(trim($_POST['HdnMediaSelection'])!=''){
+
+                        $postThumbnailID=(int)$_POST['HdnMediaSelection'];
+                        $photoMeta = wp_get_attachment_metadata( $postThumbnailID );
+                        if(is_array($photoMeta) and isset($photoMeta['file'])) {
+
+                            $fileName=$photoMeta['file'];
+                            $phyPath=ABSPATH;
+                            $phyPath=str_replace("\\","/",$phyPath);
+
+                            $pathArray=pathinfo($fileName);
+
+                            $imagename=$pathArray['basename'];
+
+                            $fileUrl=$phyPath.'wp-content/uploads/'.$fileName;
+                            $fileUrl=str_replace("\\","/",$fileUrl);
+
+                            $wpcurrentdir=dirname(__FILE__);
+                            $wpcurrentdir=str_replace("\\","/",$wpcurrentdir);
+                            $imageUploadTo=$pathToImagesFolder.'/'.$imagename;
+
+                            @copy($fileUrl, $imageUploadTo);
 
                         }
-                    }    
+
+                    }  
 
 
                     try{
@@ -909,8 +986,8 @@
 
                     }
 
-                    if ($_FILES["image_name"]["error"] > 0)
-                    {
+                     if ($_FILES["image_name"]['name']!='' and $_FILES["image_name"]["error"] > 0)
+                     {
                         $my_responsive_photo_gallery_slider_settings_messages=array();
                         $my_responsive_photo_gallery_slider_settings_messages['type']='err';
                         $my_responsive_photo_gallery_slider_settings_messages['message']='Error while file uploading.';
@@ -924,13 +1001,44 @@
 
                         try{
 
-                            $wpcurrentdir=dirname(__FILE__);
-                            $wpcurrentdir=str_replace("\\","/",$wpcurrentdir);
-                            $path_parts = pathinfo($_FILES["image_name"]["name"]);
-                            $extension = $path_parts['extension'];       
-                            $imagename=md5(time()).".$extension";
-                            $imageUploadTo=$wpcurrentdir.'/imagestoscroll/'.$imagename;
-                            move_uploaded_file($_FILES["image_name"]["tmp_name"],$imageUploadTo); 
+                            if(isset($_FILES["image_name"]['name']) and $_FILES["image_name"]['name']!="" and $_FILES["image_name"]['name']!=null){
+
+                                $wpcurrentdir=dirname(__FILE__);
+                                $wpcurrentdir=str_replace("\\","/",$wpcurrentdir);
+                                $path_parts = pathinfo($_FILES["image_name"]["name"]);
+                                $extension = $path_parts['extension'];       
+                                $imagename=md5(time()).".$extension";
+                                $imageUploadTo=$pathToImagesFolder.'/'.$imagename;
+
+                                move_uploaded_file($_FILES["image_name"]["tmp_name"],$imageUploadTo ); 
+                            }   
+                            else if(trim($_POST['HdnMediaSelection'])!=''){
+
+                                $postThumbnailID=(int)$_POST['HdnMediaSelection'];
+                                $photoMeta = wp_get_attachment_metadata( $postThumbnailID );
+
+                                if(is_array($photoMeta) and isset($photoMeta['file'])) {
+
+                                    $fileName=$photoMeta['file'];
+                                    $phyPath=ABSPATH;
+                                    $phyPath=str_replace("\\","/",$phyPath);
+
+                                    $pathArray=pathinfo($fileName);
+
+                                    $imagename=$pathArray['basename'];
+
+                                    $fileUrl=$phyPath.'wp-content/uploads/'.$fileName;
+                                    $fileUrl=str_replace("\\","/",$fileUrl);
+
+                                    $wpcurrentdir=dirname(__FILE__);
+                                    $wpcurrentdir=str_replace("\\","/",$wpcurrentdir);
+                                    $imageUploadTo=$pathToImagesFolder.'/'.$imagename;
+
+                                    @copy($fileUrl, $imageUploadTo);
+
+                                }
+
+                            } 
 
 
                             $query = "INSERT INTO ".$wpdb->prefix."gv_responsive_slider (title, image_name,createdon,custom_link) 
@@ -1003,6 +1111,134 @@
                             <div id="post-body-content">
                                 <form method="post" action="" id="addimage" name="addimage" enctype="multipart/form-data" >
 
+                                    <div class="stuffbox" id="namediv" style="width:100%;">
+                                        <h3><label for="link_name">Upload Image</label></h3>
+                                        <div class="inside" id="fileuploaddiv">
+                                            <?php if($image_name!=""){ ?>
+                                                <div><b>Current Image : </b><a id="currImg" href="<?php echo $baseurl.$image_name; ?>" target="_new"><?php echo $image_name; ?></a></div>
+                                                <?php } ?>      
+                                            <input type="file" name="image_name" onchange="reloadfileupload();"  id="image_name" size="30" />
+                                            <div style="clear:both"></div>
+                                            <div></div>
+                                            <div class="uploader">
+                                                <br/>
+                                                <b style="margin-left: 50px;">OR</b><div style="clear: both;margin-top: 15px;"></div>
+                                                <?php if(my_responsive_photo_gallery_get_wp_version()>=3.5){ ?>
+                                                    <a href="javascript:;" class="niks_media" id="myMediaUploader"><b>Use WordPress Media Uploader</b></a>
+                                                    <?php }?>  
+                                                <input id="HdnMediaSelection" name="HdnMediaSelection" type="hidden" value="" />
+                                                <br/>
+                                            </div>  
+                                            <?php if(my_responsive_photo_gallery_get_wp_version()>=3.5){ ?>
+                                                <script>
+                                                    var $n = jQuery.noConflict();  
+                                                    $n(document).ready(function() {
+                                                            //uploading files variable
+                                                            var custom_file_frame;
+                                                            $n("#myMediaUploader").click(function(event) {
+                                                                    event.preventDefault();
+                                                                    //If the frame already exists, reopen it
+                                                                    if (typeof(custom_file_frame)!=="undefined") {
+                                                                        custom_file_frame.close();
+                                                                    }
+
+                                                                    //Create WP media frame.
+                                                                    custom_file_frame = wp.media.frames.customHeader = wp.media({
+                                                                            //Title of media manager frame
+                                                                            title: "WP Media Uploader",
+                                                                            library: {
+                                                                                type: 'image'
+                                                                            },
+                                                                            button: {
+                                                                                //Button text
+                                                                                text: "Set Image"
+                                                                            },
+                                                                            //Do not allow multiple files, if you want multiple, set true
+                                                                            multiple: false
+                                                                    });
+
+                                                                    //callback for selected image
+                                                                    custom_file_frame.on('select', function() {
+
+                                                                            var attachment = custom_file_frame.state().get('selection').first().toJSON();
+
+                                                                            var validExtensions=new Array();
+                                                                            validExtensions[0]='jpg';
+                                                                            validExtensions[1]='jpeg';
+                                                                            validExtensions[2]='png';
+                                                                            validExtensions[3]='gif';
+
+
+                                                                            var inarr=parseInt($n.inArray( attachment.subtype, validExtensions));
+
+                                                                            if(inarr>0 && attachment.type.toLowerCase()=='image' ){
+
+                                                                                var titleTouse="";
+                                                                                var imageDescriptionTouse="";
+
+                                                                                if($n.trim(attachment.title)!=''){
+
+                                                                                    titleTouse=$n.trim(attachment.title); 
+                                                                                }  
+                                                                                else if($n.trim(attachment.caption)!=''){
+
+                                                                                    titleTouse=$n.trim(attachment.caption);  
+                                                                                }
+
+                                                                                if($n.trim(attachment.description)!=''){
+
+                                                                                    imageDescriptionTouse=$n.trim(attachment.description); 
+                                                                                }  
+                                                                                else if($n.trim(attachment.caption)!=''){
+
+                                                                                    imageDescriptionTouse=$n.trim(attachment.caption);  
+                                                                                }
+
+                                                                                $n("#imagetitle").val(titleTouse);  
+                                                                                $n("#image_description").val(imageDescriptionTouse);  
+
+                                                                                if(attachment.id!=''){
+                                                                                    $n("#HdnMediaSelection").val(attachment.id);  
+                                                                                }   
+
+                                                                            }  
+                                                                            else{
+
+                                                                                alert('Invalid image selection.');
+                                                                            }  
+                                                                            //do something with attachment variable, for example attachment.filename
+                                                                            //Object:
+                                                                            //attachment.alt - image alt
+                                                                            //attachment.author - author id
+                                                                            //attachment.caption
+                                                                            //attachment.dateFormatted - date of image uploaded
+                                                                            //attachment.description
+                                                                            //attachment.editLink - edit link of media
+                                                                            //attachment.filename
+                                                                            //attachment.height
+                                                                            //attachment.icon - don't know WTF?))
+                                                                            //attachment.id - id of attachment
+                                                                            //attachment.link - public link of attachment, for example ""http://site.com/?attachment_id=115""
+                                                                            //attachment.menuOrder
+                                                                            //attachment.mime - mime type, for example image/jpeg"
+                                                                            //attachment.name - name of attachment file, for example "my-image"
+                                                                            //attachment.status - usual is "inherit"
+                                                                            //attachment.subtype - "jpeg" if is "jpg"
+                                                                            //attachment.title
+                                                                            //attachment.type - "image"
+                                                                            //attachment.uploadedTo
+                                                                            //attachment.url - http url of image, for example "http://site.com/wp-content/uploads/2012/12/my-image.jpg"
+                                                                            //attachment.width
+                                                                    });
+
+                                                                    //Open modal
+                                                                    custom_file_frame.open();
+                                                            });
+                                                    })
+                                                </script>
+                                                <?php } ?> 
+                                        </div>
+                                    </div>
                                     <div class="stuffbox" id="namediv" style="width:100%">
                                         <h3><label for="link_name">Image Title</label></h3>
                                         <div class="inside">
@@ -1023,17 +1259,7 @@
                                             <p><?php _e('On image click users will redirect to this url.'); ?></p>
                                         </div>
                                     </div>
-                                    <div class="stuffbox" id="namediv" style="width:100%">
-                                        <h3><label for="link_name">Upload Image</label></h3>
-                                        <div class="inside" id="fileuploaddiv">
-                                            <?php if($image_name!=""){ ?>
-                                                <div><b>Current Image : </b><a id="currImg" href="<?php echo $url;?>imagestoscroll/<?php echo $image_name; ?>" target="_new"><?php echo $image_name; ?></a></div>
-                                                <?php } ?>      
-                                            <input type="file" name="image_name" onchange="reloadfileupload();"  id="image_name" size="30" />
-                                            <div style="clear:both"></div>
-                                            <div></div>
-                                        </div>
-                                    </div>
+                                    
                                     <?php if(isset($_GET['id']) and $_GET['id']>0){ ?> 
                                         <input type="hidden" name="imageid" id="imageid" value="<?php echo $_GET['id'];?>">
                                         <?php
@@ -1069,10 +1295,10 @@
                                             })
                                     });
 
-                                    function validateFile(){
+                                      function validateFile(){
 
-                                        var $n = jQuery.noConflict();   
-                                        if($n('#currImg').length>0){
+                                        var $n = jQuery.noConflict();  
+                                        if($n('#currImg').length>0 || $n.trim($n("#HdnMediaSelection").val())!=""){
                                             return true;
                                         }
                                         var fragment = $n("#image_name").val();
@@ -1105,7 +1331,6 @@
                                         validExtensions[2]='png';
                                         validExtensions[3]='gif';
 
-
                                         var extension = filename.substr( (filename.lastIndexOf('.') +1) ).toLowerCase();
 
                                         var inarr=parseInt($n.inArray( extension, validExtensions));
@@ -1123,7 +1348,7 @@
                                         } 
 
 
-                                    }  
+                                    } 
                                 </script> 
 
                             </div>
@@ -1176,7 +1401,7 @@
                     $wpcurrentdir=dirname(__FILE__);
                     $wpcurrentdir=str_replace("\\","/",$wpcurrentdir);
                     $imagename=$_FILES["image_name"]["name"];
-                    $imagetoDel=$wpcurrentdir.'/imagestoscroll/'.$image_name;
+                    $imagetoDel=$pathToImagesFolder.'/'.$image_name;
                     @unlink($imagetoDel);
 
                     $query = "delete from  ".$wpdb->prefix."gv_responsive_slider where id=$deleteId";
@@ -1224,7 +1449,7 @@
                                 $wpcurrentdir=dirname(__FILE__);
                                 $wpcurrentdir=str_replace("\\","/",$wpcurrentdir);
                                 $imagename=$_FILES["image_name"]["name"];
-                                $imagetoDel=$wpcurrentdir.'/imagestoscroll/'.$image_name;
+                                $imagetoDel=$pathToImagesFolder.'/'.$image_name;
                                 @unlink($imagetoDel);
                                 $query = "delete from  ".$wpdb->prefix."gv_responsive_slider where id=$img";
                                 $wpdb->query($query); 
@@ -1279,6 +1504,14 @@
                 <?php
                     $wpcurrentdir=dirname(__FILE__);
                     $wpcurrentdir=str_replace("\\","/",$wpcurrentdir);
+                    
+                    $uploads = wp_upload_dir ();
+                    $baseDir = $uploads ['basedir'];
+                    $baseDir = str_replace ( "\\", "/", $baseDir );
+                    $pathToImagesFolder = $baseDir . '/wp-responsive-photo-gallery';
+
+                    $baseurl=$uploads['baseurl'];
+                    $baseurl.='/wp-responsive-photo-gallery/';
 
 
                 ?>
@@ -1301,7 +1534,7 @@
                                             foreach($rows as $row){
 
                                                 $imagename=$row['image_name'];
-                                                $imageUploadTo=$wpcurrentdir.'/imagestoscroll/'.$imagename;
+                                                $imageUploadTo=$pathToImagesFolder.'/'.$imagename;
                                                 $imageUploadTo=str_replace("\\","/",$imageUploadTo);
                                                 $pathinfo=pathinfo($imageUploadTo);
                                                 $filenamewithoutextension=$pathinfo['filename'];
@@ -1309,11 +1542,11 @@
 
                                                 if($settings['panel_scale']=='fit'){
 
-                                                    $outputimg = plugin_dir_url(__FILE__)."imagestoscroll/".$imagename;
+                                                    $outputimg = $baseurl.$imagename;
 
                                                 }else{
 
-                                                    list($width, $height) = getimagesize($wpcurrentdir."/imagestoscroll/".$row['image_name']);
+                                                    list($width, $height) = getimagesize($pathToImagesFolder."/".$row['image_name']);
                                                     if($width<$imagewidth){
                                                         $imagewidth=$width;
                                                     }
@@ -1323,24 +1556,36 @@
                                                         $imageheight=$height;
                                                     }
 
-                                                    $imagetoCheck=$wpcurrentdir.'/imagestoscroll/'.$filenamewithoutextension.'_'.$imageheight.'_'.$imagewidth.'.'.$pathinfo['extension'];
+                                                    $imagetoCheck=$pathToImagesFolder.'/'.$filenamewithoutextension.'_'.$imageheight.'_'.$imagewidth.'.'.$pathinfo['extension'];
+                                                    $imagetoCheckSmall=$pathToImagesFolder.'/'.$filenamewithoutextension.'_'.$imageheight.'_'.$imagewidth.'.'.strtolower($pathinfo['extension']);
+                             
 
                                                     if(file_exists($imagetoCheck)){
-                                                        $outputimg = plugin_dir_url(__FILE__)."imagestoscroll/".$filenamewithoutextension.'_'.$imageheight.'_'.$imagewidth.'.'.$pathinfo['extension'];
+                                                        $outputimg = $baseurl.$filenamewithoutextension.'_'.$imageheight.'_'.$imagewidth.'.'.$pathinfo['extension'];
 
                                                     }
+                                                    else if(file_exists($imagetoCheckSmall)){
+                                                            $outputimg = $baseurl.$filenamewithoutextension.'_'.$imageheight.'_'.$imagewidth.'.'.strtolower($pathinfo['extension']);
+                                                        }
                                                     else{
 
-                                                        if(file_exists($wpcurrentdir."/imagestoscroll/".$row['image_name'])){
+                                                        if(file_exists($pathToImagesFolder."/".$row['image_name'])){
 
-                                                            $resizeObj = new resize($wpcurrentdir."/imagestoscroll/".$row['image_name']); 
+                                                            $resizeObj = new resize($pathToImagesFolder."/".$row['image_name']); 
                                                             $resizeObj -> resizeImage($imagewidth, $imageheight, "exact"); 
-                                                            $resizeObj -> saveImage($wpcurrentdir."/imagestoscroll/".$filenamewithoutextension.'_'.$imageheight.'_'.$imagewidth.'.'.$pathinfo['extension'], 100); 
-                                                            $outputimg = plugin_dir_url(__FILE__)."imagestoscroll/".$filenamewithoutextension.'_'.$imageheight.'_'.$imagewidth.'.'.$pathinfo['extension'];
+                                                            $resizeObj -> saveImage($pathToImagesFolder."/".$filenamewithoutextension.'_'.$imageheight.'_'.$imagewidth.'.'.$pathinfo['extension'], 100); 
+                                                            //$outputimg = plugin_dir_url(__FILE__)."imagestoscroll/".$filenamewithoutextension.'_'.$imageheight.'_'.$imagewidth.'.'.$pathinfo['extension'];
+                                                            
+                                                             if(file_exists($imagetoCheck)){
+                                                                    $outputimg = $baseurl.$filenamewithoutextension.'_'.$imageheight.'_'.$imagewidth.'.'.$pathinfo['extension'];
+                                                                }
+                                                                else if(file_exists($imagetoCheckSmall)){
+                                                                    $outputimg = $baseurl.$filenamewithoutextension.'_'.$imageheight.'_'.$imagewidth.'.'.strtolower($pathinfo['extension']);
+                                                                }
 
                                                         }else{
 
-                                                            $outputimg = plugin_dir_url(__FILE__)."imagestoscroll/".$imagename;
+                                                            $outputimg = $baseurl.$imagename;
                                                         }   
 
                                                     }
@@ -1481,6 +1726,15 @@
         $wpcurrentdir=dirname(__FILE__);
         $wpcurrentdir=str_replace("\\","/",$wpcurrentdir);
         $url = plugin_dir_url(__FILE__);
+        
+        $uploads = wp_upload_dir ();
+        $baseDir = $uploads ['basedir'];
+        $baseDir = str_replace ( "\\", "/", $baseDir );
+        $pathToImagesFolder = $baseDir . '/wp-responsive-photo-gallery';
+
+        $baseurl=$uploads['baseurl'];
+        $baseurl.='/wp-responsive-photo-gallery/';
+        
         ob_start();
     ?>      
     <div id="divSliderMain_admin_<?php echo $rand_Numb;?>" style="max-width:<?php echo $settings['panel_width'];?>px;">
@@ -1496,7 +1750,7 @@
                     foreach($rows as $row){
 
                         $imagename=$row['image_name'];
-                        $imageUploadTo=$wpcurrentdir.'/imagestoscroll/'.$imagename;
+                        $imageUploadTo=$pathToImagesFolder.'/'.$imagename;
                         $imageUploadTo=str_replace("\\","/",$imageUploadTo);
                         $pathinfo=pathinfo($imageUploadTo);
                         $filenamewithoutextension=$pathinfo['filename'];
@@ -1504,10 +1758,10 @@
 
                         if($settings['panel_scale']=='fit'){
 
-                            $outputimg = plugin_dir_url(__FILE__)."imagestoscroll/".$imagename;
+                            $outputimg = $baseurl.$imagename;
 
                         }else{
-                            list($width, $height) = getimagesize($wpcurrentdir."/imagestoscroll/".$row['image_name']);
+                            list($width, $height) = getimagesize($pathToImagesFolder."/".$row['image_name']);
                             if($width<$imagewidth){
                                 $imagewidth=$width;
                             }
@@ -1517,23 +1771,27 @@
                                 $imageheight=$height;
                             }
 
-                            $imagetoCheck=$wpcurrentdir.'/imagestoscroll/'.$filenamewithoutextension.'_'.$imageheight.'_'.$imagewidth.'.'.$pathinfo['extension'];
-
+                            $imagetoCheck=$pathToImagesFolder.'/'.$filenamewithoutextension.'_'.$imageheight.'_'.$imagewidth.'.'.$pathinfo['extension'];
+                            $imagetoCheckSmall=$pathToImagesFolder.'/'.$filenamewithoutextension.'_'.$imageheight.'_'.$imagewidth.'.'.strtolower($pathinfo['extension']);
+                            
                             if(file_exists($imagetoCheck)){
-                                $outputimg = plugin_dir_url(__FILE__)."imagestoscroll/".$filenamewithoutextension.'_'.$imageheight.'_'.$imagewidth.'.'.$pathinfo['extension'];
+                                $outputimg = $baseurl.$filenamewithoutextension.'_'.$imageheight.'_'.$imagewidth.'.'.$pathinfo['extension'];
 
+                            }
+                            else if(file_exists($imagetoCheckSmall)){
+                                $outputimg = $baseurl.$filenamewithoutextension.'_'.$imageheight.'_'.$imagewidth.'.'.strtolower($pathinfo['extension']);
                             }
                             else{
 
-                                if(file_exists($wpcurrentdir."/imagestoscroll/".$row['image_name'])){
+                                if(file_exists($pathToImagesFolder."/".$row['image_name'])){
 
-                                    $resizeObj = new resize($wpcurrentdir."/imagestoscroll/".$row['image_name']); 
+                                    $resizeObj = new resize($pathToImagesFolder."/".$row['image_name']); 
                                     $resizeObj -> resizeImage($imagewidth, $imageheight, "exact"); 
-                                    $resizeObj -> saveImage($wpcurrentdir."/imagestoscroll/".$filenamewithoutextension.'_'.$imageheight.'_'.$imagewidth.'.'.$pathinfo['extension'], 100); 
-                                    $outputimg = plugin_dir_url(__FILE__)."imagestoscroll/".$filenamewithoutextension.'_'.$imageheight.'_'.$imagewidth.'.'.$pathinfo['extension'];
+                                    $resizeObj -> saveImage($pathToImagesFolder."/".$filenamewithoutextension.'_'.$imageheight.'_'.$imagewidth.'.'.$pathinfo['extension'], 100); 
+                                    $outputimg = $baseurl.$filenamewithoutextension.'_'.$imageheight.'_'.$imagewidth.'.'.$pathinfo['extension'];
                                 }else{
 
-                                    $outputimg = plugin_dir_url(__FILE__)."imagestoscroll/".$imagename;
+                                    $outputimg = $baseurl.$imagename;
                                 }    
 
                             }
@@ -1652,5 +1910,33 @@
     <?php
         $output = ob_get_clean();
         return $output;
+    }
+    
+      function my_responsive_photo_gallery_get_wp_version() {
+
+        global $wp_version;
+        return $wp_version;
+    }
+
+
+    function my_responsive_photo_gallery_is_plugin_page() {
+        $server_uri = "http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+
+        foreach (array('responsive_photo_gallery_image_management') as $allowURI) {
+            if(stristr($server_uri, $allowURI)) return true;
+        }
+        return false;
+    }
+
+
+    function my_responsive_photo_gallery_admin_scripts_init() {
+        if(my_responsive_photo_gallery_is_plugin_page()) {
+            //double check for WordPress version and function exists
+            if(function_exists('wp_enqueue_media') && version_compare(my_responsive_photo_gallery_get_wp_version(), '3.5', '>=')) {
+                //call for new media manager
+                wp_enqueue_media();
+            }
+            wp_enqueue_style('media');
+        }
     }
 ?>

@@ -3,7 +3,7 @@ Contributors:nik00726
 Donate link: http://www.i13websolution.com/donate-wordpress_image_thumbnail.php
 Tags:wordpress responsive photo gallery,wordpress responsive gallery,wordpress responsive photo slideshow,wp responsive photo slideshow,wordpress responsive carousel gallery,wordpress responsive photo album slideshow
 Requires at least:3.0
-Tested up to:4.1
+Tested up to:4.2.2
 Version:1.0
 Stable tag:trunk
 License: GPLv2 or later
@@ -12,8 +12,6 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 This is beautiful responsive photo gallery plugin for wordPress blogs and sites.Admin can manages any number of images into the photo gallery.
 
 == Description ==
-
-**Support Upto WordPress 4.1**
 
 WordPress responsive photo gallery is beautiful photo thumbnail gallery with main image.Admin can manages any number of images into the photo gallery slider.
 Admin can add,edit and delete slider images.Before add responsive gallery to wordPress blog admin can preview a slider.Admin can set height,width of slider images and thumbnil images also.Admin can also set speed.Admin can also set if want to slide automatic slider or not and many other settings.
@@ -49,27 +47,29 @@ to theme or pages/posts.
 
 1. Unlimited Photo Galleries(Multiple Photo Gallery).
 
-2. Use wordPress media uploader to upload image.
+2. Mass Images Upload Using WordPress Media Editor.
 
-3. Add wordpress featured image in photo gallery directly from post/page add/edit.
+3. Use wordPress media uploader to upload image.
 
-4. Slider Easing Effects(select your desired slider easing effect ).
+4. Add wordpress featured image in photo gallery directly from post/page add/edit.
 
-5. No advertisements.
+5. Slider Easing Effects(select your desired slider easing effect ).
 
-6. New Field Added Image Description.If image description set it will added to image caption.
+6. No advertisements.
 
-7. New Field Added Image Order,Now admin can display photo gallery according image order.
+7. If image description set it will added to image caption.
 
-8. New Field added open image link in new tab or same tab.
+8. Now admin can display photo gallery according image order.
 
-9. Display photo gallery with thumbnail caption.
+9. Open image link in new tab or same tab.
 
-10. Display slider image with caption(image with description).
+10. Display photo gallery with thumbnail caption.
 
-11. Display tumbnail gallary to left,right,top,bottom.
+11. Display slider image with caption(image with description).
 
-12. Responsive Admin Layout.
+12. Display tumbnail gallary to left,right,top,bottom.
+
+13. Responsive Admin Layout.
 
 
 [Get Support](http://www.i13websolution.com/contacts)
