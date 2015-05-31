@@ -16,7 +16,7 @@ This is beautiful responsive photo gallery plugin for wordPress blogs and sites.
 WordPress responsive photo gallery is beautiful photo thumbnail gallery with main image.Admin can manages any number of images into the photo gallery slider.
 Admin can add,edit and delete slider images.Before add responsive gallery to wordPress blog admin can preview a slider.Admin can set height,width of slider images and thumbnil images also.Admin can also set speed.Admin can also set if want to slide automatic slider or not and many other settings.
 
-**Find WordPress Responsive Photo Gallery Pro Plugin (Unlimited Photo Gallary+Much more fatures) at [WordPress Responsive Photo Gallery Pro Plugin](http://www.i13websolution.com/wordpress-pro-plugins/wordpress-responsive-photo-gallery-pro-plugin.html)**
+**Find WordPress Responsive Photo Gallery Pro Plugin (Unlimited Photo Gallary + Mass Image Upload + Much more fatures) at [WordPress Responsive Photo Gallery Pro Plugin](http://www.i13websolution.com/wordpress-pro-plugins/wordpress-responsive-photo-gallery-pro-plugin.html)**
 
 **[Live Demo WordPress Responsive Photo Gallery pro](http://blog.i13websolution.com/wp-responsive-photo-gallery-pro/)**
 
