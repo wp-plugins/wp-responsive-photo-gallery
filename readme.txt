@@ -3,7 +3,7 @@ Contributors:nik00726
 Donate link: http://www.i13websolution.com/donate-wordpress_image_thumbnail.php
 Tags:wordpress responsive photo gallery,wordpress responsive gallery,wordpress responsive photo slideshow,wp responsive photo slideshow,wordpress responsive carousel gallery,wordpress responsive photo album slideshow
 Requires at least:3.0
-Tested up to:4.2.2
+Tested up to:4.3
 Version:1.0
 Stable tag:trunk
 License: GPLv2 or later
@@ -21,6 +21,10 @@ Admin can add,edit and delete slider images.Before add responsive gallery to wor
 **[Live Demo WordPress Responsive Photo Gallery pro](http://blog.i13websolution.com/wp-responsive-photo-gallery-pro/)**
 
 **Please rate this plugin if you find it useful**
+
+**[Photogallery Pro Video](https://wordpress.org/plugins/wp-responsive-photo-gallery/)**
+
+https://wordpress.org/plugins/wp-responsive-photo-gallery/
 
 
 **=Features=**
