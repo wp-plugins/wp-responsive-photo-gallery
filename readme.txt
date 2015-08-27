@@ -22,9 +22,9 @@ Admin can add,edit and delete slider images.Before add responsive gallery to wor
 
 **Please rate this plugin if you find it useful**
 
-**[Photogallery Pro Video](https://wordpress.org/plugins/wp-responsive-photo-gallery/)**
+**[Photogallery Pro Video](https://www.youtube.com/watch?v=enYB1s1P8C0)**
 
-https://wordpress.org/plugins/wp-responsive-photo-gallery/
+https://www.youtube.com/watch?v=enYB1s1P8C0
 
 
 **=Features=**
