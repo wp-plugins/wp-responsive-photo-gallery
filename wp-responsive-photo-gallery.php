@@ -38,6 +38,7 @@
     function install_my_responsive_photo_gallery(){
         global $wpdb;
         $table_name = $wpdb->prefix . "gv_responsive_slider";
+         $charset_collate = $wpdb->get_charset_collate();
 
         $sql = "CREATE TABLE " . $table_name . " (
         id int(10) unsigned NOT NULL auto_increment,
@@ -47,7 +48,7 @@
         custom_link varchar(1000) default NULL,
         post_id int(10) unsigned default NULL,
         PRIMARY KEY  (id)
-        );";
+        ) $charset_collate;";
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
 
@@ -162,26 +163,32 @@
 
         if(isset($_POST['btnsave'])){
 
+            if ( !check_admin_referer( 'action_image_add_edit','add_edit_image_nonce')){
+
+                  wp_die('Security check fail'); 
+              }
+
+                
             $options=array();
-            $options['transition_speed']       =(int)trim($_POST['transition_speed']);
-            $options['transition_interval']    =(int)trim($_POST['transition_interval']);
-            $options['show_panel_nav']         =(int)trim($_POST['show_panel_nav']);
-            $options['panel_width']            =(int)trim($_POST['panel_width']);
-            $options['panel_height']           =(int)trim($_POST['panel_height']);
-            $options['panel_height']           =(int)trim($_POST['panel_height']);
-            $options['panel_scale']            =trim($_POST['panel_scale']);
-            $options['pan_style'   ]           =trim($_POST['pan_style']);
-            $options['pan_images']             =(int)trim($_POST['pan_images']);
-            $options['show_filmstrip']         =(int)trim($_POST['show_filmstrip']);
-            $options['autoplay']               =(int)trim($_POST['autoplay']);
-            $options['frame_width']            =(int)trim($_POST['frame_width']);
-            $options['frame_height']           =(int)trim($_POST['frame_height']);
-            $options['frame_opacity']          =trim($_POST['frame_opacity']);
-            $options['frame_scale']            =trim($_POST['frame_scale']);
+            $options['transition_speed']       =(int)trim(htmlentities(strip_tags($_POST['transition_speed']),ENT_QUOTES));
+            $options['transition_interval']    =(int)trim(htmlentities(strip_tags($_POST['transition_interval']),ENT_QUOTES));
+            $options['show_panel_nav']         =(int)trim(htmlentities(strip_tags($_POST['show_panel_nav']),ENT_QUOTES));
+            $options['panel_width']            =(int)trim(htmlentities(strip_tags($_POST['panel_width']),ENT_QUOTES));
+            $options['panel_height']           =(int)trim(htmlentities(strip_tags($_POST['panel_height']),ENT_QUOTES));
+            $options['panel_height']           =(int)trim(htmlentities(strip_tags($_POST['panel_height']),ENT_QUOTES));
+            $options['panel_scale']            =trim(htmlentities(strip_tags($_POST['panel_scale']),ENT_QUOTES));
+            $options['pan_style'   ]           =trim(htmlentities(strip_tags($_POST['pan_style']),ENT_QUOTES));
+            $options['pan_images']             =(int)trim(htmlentities(strip_tags($_POST['pan_images']),ENT_QUOTES));
+            $options['show_filmstrip']         =(int)trim(htmlentities(strip_tags($_POST['show_filmstrip']),ENT_QUOTES));
+            $options['autoplay']               =(int)trim(htmlentities(strip_tags($_POST['autoplay']),ENT_QUOTES));
+            $options['frame_width']            =(int)trim(htmlentities(strip_tags($_POST['frame_width']),ENT_QUOTES));
+            $options['frame_height']           =(int)trim(htmlentities(strip_tags($_POST['frame_height']),ENT_QUOTES));
+            $options['frame_opacity']          =trim(htmlentities(strip_tags($_POST['frame_opacity']),ENT_QUOTES));
+            $options['frame_scale']            =trim(htmlentities(strip_tags($_POST['frame_scale']),ENT_QUOTES));
             $options['filmstrip_style']        ='scroll';
-            $options['frame_gap']              =(int)trim($_POST['frame_gap']);
-            $options['show_infobar']           =(int)trim($_POST['show_infobar']);
-            $options['infobar_opacity']        =trim($_POST['infobar_opacity']);
+            $options['frame_gap']              =(int)trim(htmlentities(strip_tags($_POST['frame_gap']),ENT_QUOTES));
+            $options['show_infobar']           =(int)trim(htmlentities(strip_tags($_POST['show_infobar']),ENT_QUOTES));
+            $options['infobar_opacity']        =trim(htmlentities(strip_tags($_POST['infobar_opacity']),ENT_QUOTES));
             $options['start_frame']            =1;
             $options['panel_animation']        ='fade';
             $options['overlay_position']       ='bottom';
@@ -214,14 +221,14 @@
                 <table><tr><td><a href="https://twitter.com/FreeAdsPost" class="twitter-follow-button" data-show-count="false" data-size="large" data-show-screen-name="false">Follow @FreeAdsPost</a>
                             <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></td>
                         <td>
-                            <a target="_blank" title="Donate" href="http://my-php-scripts.net/donate-wordpress_image_thumbnail.php">
-                                <img id="help us for free plugin" height="30" width="90" src="http://www.postfreeadvertising.com/images/paypaldonate.jpg" border="0" alt="help us for free plugin" title="help us for free plugin">
+                            <a target="_blank" title="Donate" href="http://i13websolution.com/donate-wordpress_image_thumbnail.php">
+                                <img id="help us for free plugin" height="30" width="90" src="<?php echo plugins_url( 'images/paypaldonate.jpg', __FILE__ );?>" border="0" alt="help us for free plugin" title="help us for free plugin">
                             </a>
                         </td>
                     </tr>
                 </table>
                 <div style="clear:both">
-                    <span><h3 style="color: blue;"><a target="_blank" href="http://www.i13websolution.com/wordpress-pro-plugins/wordpress-responsive-photo-gallery-pro-plugin.html">UPGRADE TO PRO VERSION</a></h3></span>
+                    <span><h3 style="color: blue;"><a target="_blank" href="http://i13websolution.com/wordpress-responsive-photo-gallery-pro-plugin.html">UPGRADE TO PRO VERSION</a></h3></span>
                 </div>     
                 <?php
                     $messages=get_option('my_responsive_photo_gallery_slider_settings_messages'); 
@@ -452,6 +459,7 @@
                                             </tr>  
                                             <tr>
                                                 <td class="label">
+                                                     <?php wp_nonce_field('action_image_add_edit','add_edit_image_nonce'); ?>
                                                     <input type="submit"  name="btnsave" id="btnsave" value="Save Changes" class="button-primary">      
                                                 </td>
                                                 <td class="value">
@@ -698,14 +706,14 @@
             <table><tr><td><a href="https://twitter.com/FreeAdsPost" class="twitter-follow-button" data-show-count="false" data-size="large" data-show-screen-name="false">Follow @FreeAdsPost</a>
                         <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></td>
                     <td>
-                        <a target="_blank" title="Donate" href="http://my-php-scripts.net/donate-wordpress_image_thumbnail.php">
-                            <img id="help us for free plugin" height="30" width="90" src="http://www.postfreeadvertising.com/images/paypaldonate.jpg" border="0" alt="help us for free plugin" title="help us for free plugin">
+                        <a target="_blank" title="Donate" href="http://i13websolution.com/donate-wordpress_image_thumbnail.php">
+                            <img id="help us for free plugin" height="30" width="90" src="<?php echo plugins_url( 'images/paypaldonate.jpg', __FILE__ );?>" border="0" alt="help us for free plugin" title="help us for free plugin">
                         </a>
                     </td>
                 </tr>
             </table>
             <div style="clear:both">
-                <span><h3 style="color: blue;"><a target="_blank" href="http://www.i13websolution.com/wordpress-pro-plugins/wordpress-responsive-photo-gallery-pro-plugin.html">UPGRADE TO PRO VERSION</a></h3></span>
+                <span><h3 style="color: blue;"><a target="_blank" href="http://i13websolution.com/wordpress-responsive-photo-gallery-pro-plugin.html">UPGRADE TO PRO VERSION</a></h3></span>
             </div>   
 
             <?php 
@@ -738,11 +746,11 @@
 
                         <form method="POST" action="admin.php?page=responsive_photo_gallery_image_management&action=deleteselected"  id="posts-filter">
                             <div class="alignleft actions">
-                                <select name="action_upper">
+                                <select name="action_upper" id="action_upper">
                                     <option selected="selected" value="-1">Bulk Actions</option>
                                     <option value="delete">delete</option>
                                 </select>
-                                <input type="submit" value="Apply" class="button-secondary action" id="deleteselected" name="deleteselected">
+                                <input type="submit" value="Apply" class="button-secondary action" id="deleteselected" name="deleteselected" onclick="return confirmDelete_bulk();">
                             </div>
                             <br class="clear">
                             <?php 
@@ -772,7 +780,7 @@
                                             if(count($rows) > 0){
 
                                                 global $wp_rewrite;
-                                                $rows_per_page = 5;
+                                                $rows_per_page = 10;
 
                                                 $current = (isset($_GET['paged'])) ? ($_GET['paged']) : 1;
                                                 $pagination_args = array(
@@ -788,19 +796,20 @@
                                                 $start = ($current - 1) * $rows_per_page;
                                                 $end = $start + $rows_per_page;
                                                 $end = (sizeof($rows) < $end) ? sizeof($rows) : $end;
-
+                                                $delRecNonce=wp_create_nonce('delete_image');
+                                                
                                                 for ($i=$start;$i < $end ;++$i ) {
 
                                                     $row = $rows[$i];
                                                     $id=$row['id'];
                                                     $editlink="admin.php?page=responsive_photo_gallery_image_management&action=addedit&id=$id";
-                                                    $deletelink="admin.php?page=responsive_photo_gallery_image_management&action=delete&id=$id";
+                                                    $deletelink="admin.php?page=responsive_photo_gallery_image_management&action=delete&id=$id&nonce=$delRecNonce";
                                                     $outputimgmain = $baseurl.$row['image_name']; 
 
                                                 ?>
                                                 <tr valign="top">
                                                     <td class="alignCenter check-column"   data-title="Select Record" ><input type="checkbox" value="<?php echo $row['id']; ?>" name="thumbnails[]"></td>
-                                                    <td class="alignCenter" data-title="Title"><strong><?php echo stripslashes($row['title']) ?></strong></td>  
+                                                    <td class="alignCenter" data-title="Title"><strong><?php echo $row['title']; ?></strong></td>  
                                                     <td class="alignCenter">
                                                         <img src="<?php echo $outputimgmain;?>" style="width:50px" height="50px"/>
                                                     </td> 
@@ -832,16 +841,31 @@
                             ?>
                             <br/>
                             <div class="alignleft actions">
-                                <select name="action">
+                                <select name="action" id="action_bottom">
                                     <option selected="selected" value="-1">Bulk Actions</option>
                                     <option value="delete">delete</option>
                                 </select>
+                                 <?php wp_nonce_field('action_settings_mass_delete','mass_delete_nonce'); ?>
                                 <input type="submit" value="Apply" class="button-secondary action" id="deleteselected" name="deleteselected">
                             </div>
 
                         </form>
                         <script type="text/JavaScript">
 
+                             function  confirmDelete_bulk(){
+                                var topval=document.getElementById("action_bottom").value;
+                                var bottomVal=document.getElementById("action_upper").value;
+
+                                   if(topval=='delete' || bottomVal=='delete'){
+
+
+                                    var agree=confirm("Are you sure you want to delete selected images ?");
+                                    if (agree)
+                                        return true ;
+                                    else
+                                        return false;
+                                    }
+                            }
                             function  confirmDelete(){
                                 var agree=confirm("Are you sure you want to delete this image ?");
                                 if (agree)
@@ -879,41 +903,21 @@
                 //edit save
                 if(isset($_POST['imageid'])){
 
+                    if ( !check_admin_referer( 'action_image_add_edit','add_edit_image_nonce')){
+                      
+                      wp_die('Security check fail'); 
+                    }
+                  
+                    
                     //add new
                     $location='admin.php?page=responsive_photo_gallery_image_management';
-                    $title=trim(addslashes($_POST['imagetitle']));
-                    $imageurl=trim($_POST['imageurl']);
-                    $imageid=trim($_POST['imageid']);
+                    $title=trim(htmlentities(strip_tags($_POST['imagetitle']),ENT_QUOTES));
+                    $imageurl=trim(htmlentities(strip_tags($_POST['imageurl']),ENT_QUOTES));
+                    $imageid=trim(htmlentities(strip_tags($_POST['imageid']),ENT_QUOTES));
                     $imagename="";
-                    if($_FILES["image_name"]['name']!="" and $_FILES["image_name"]['name']!=null){
+                    if(trim($_POST['HdnMediaSelection'])!=''){
 
-                        if ($_FILES["image_name"]["error"] > 0)
-                        {
-                            $my_responsive_photo_gallery_slider_settings_messages=array();
-                            $my_responsive_photo_gallery_slider_settings_messages['type']='err';
-                            $my_responsive_photo_gallery_slider_settings_messages['message']='Error while file uploading.';
-                            update_option('my_responsive_photo_gallery_slider_settings_messages', $my_responsive_photo_gallery_slider_settings_messages);
-
-
-                            echo "<script type='text/javascript'> location.href='$location';</script>";
-                            exit;
-
-                        }
-                        else{
-
-                            $wpcurrentdir=dirname(__FILE__);
-                            $wpcurrentdir=str_replace("\\","/",$wpcurrentdir);
-                            $path_parts = pathinfo($_FILES["image_name"]["name"]);
-                            $extension = $path_parts['extension'];       
-                            $imagename=md5(time()).".$extension";
-                            $imageUploadTo=$pathToImagesFolder.'/'.$imagename;
-                            move_uploaded_file($_FILES["image_name"]["tmp_name"],$imageUploadTo); 
-
-                        }
-                    }
-                    else if(trim($_POST['HdnMediaSelection'])!=''){
-
-                        $postThumbnailID=(int)$_POST['HdnMediaSelection'];
+                        $postThumbnailID=(int) htmlentities(strip_tags($_POST['HdnMediaSelection']),ENT_QUOTES);
                         $photoMeta = wp_get_attachment_metadata( $postThumbnailID );
                         if(is_array($photoMeta) and isset($photoMeta['file'])) {
 
@@ -973,8 +977,8 @@
                     //add new
 
                     $location='admin.php?page=responsive_photo_gallery_image_management';
-                    $title=trim(addslashes($_POST['imagetitle']));
-                    $imageurl=trim($_POST['imageurl']);
+                    $title=trim(htmlentities(strip_tags($_POST['imagetitle']),ENT_QUOTES));
+                    $imageurl=trim(htmlentities(strip_tags($_POST['imageurl']),ENT_QUOTES));
                     $createdOn=date('Y-m-d h:i:s');
                     if(function_exists('date_i18n')){
 
@@ -986,35 +990,14 @@
 
                     }
 
-                     if ($_FILES["image_name"]['name']!='' and $_FILES["image_name"]["error"] > 0)
-                     {
-                        $my_responsive_photo_gallery_slider_settings_messages=array();
-                        $my_responsive_photo_gallery_slider_settings_messages['type']='err';
-                        $my_responsive_photo_gallery_slider_settings_messages['message']='Error while file uploading.';
-                        update_option('my_responsive_photo_gallery_slider_settings_messages', $my_responsive_photo_gallery_slider_settings_messages);
-
-                        echo "<script type='text/javascript'> location.href='$location';</script>";
-
-                    }
-                    else{
-                        $location='admin.php?page=responsive_photo_gallery_image_management';
+                     
+                    $location='admin.php?page=responsive_photo_gallery_image_management';
 
                         try{
 
-                            if(isset($_FILES["image_name"]['name']) and $_FILES["image_name"]['name']!="" and $_FILES["image_name"]['name']!=null){
+                            if(trim($_POST['HdnMediaSelection'])!=''){
 
-                                $wpcurrentdir=dirname(__FILE__);
-                                $wpcurrentdir=str_replace("\\","/",$wpcurrentdir);
-                                $path_parts = pathinfo($_FILES["image_name"]["name"]);
-                                $extension = $path_parts['extension'];       
-                                $imagename=md5(time()).".$extension";
-                                $imageUploadTo=$pathToImagesFolder.'/'.$imagename;
-
-                                move_uploaded_file($_FILES["image_name"]["tmp_name"],$imageUploadTo ); 
-                            }   
-                            else if(trim($_POST['HdnMediaSelection'])!=''){
-
-                                $postThumbnailID=(int)$_POST['HdnMediaSelection'];
+                                $postThumbnailID=(int) htmlentities(strip_tags($_POST['HdnMediaSelection']),ENT_QUOTES);
                                 $photoMeta = wp_get_attachment_metadata( $postThumbnailID );
 
                                 if(is_array($photoMeta) and isset($photoMeta['file'])) {
@@ -1061,7 +1044,7 @@
                             update_option('my_responsive_photo_gallery_slider_settings_messages', $my_responsive_photo_gallery_slider_settings_messages);
                         }  
 
-                    }     
+                        
                     echo "<script type='text/javascript'> location.href='$location';</script>";          
 
                 } 
@@ -1083,9 +1066,9 @@
 
                             if(is_object($myrow)){
 
-                                $title=stripslashes($myrow->title);
+                                $title=$myrow->title;
                                 $image_link=$myrow->custom_link;
-                                $image_name=stripslashes($myrow->image_name);
+                                $image_name=$myrow->image_name;
 
                             }   
 
@@ -1101,7 +1084,7 @@
 
                         ?>
                         <div style="clear:both">
-                            <span><h3 style="color: blue;"><a target="_blank" href="http://www.i13websolution.com/wordpress-pro-plugins/wordpress-responsive-photo-gallery-pro-plugin.html">UPGRADE TO PRO VERSION</a></h3></span>
+                            <span><h3 style="color: blue;"><a target="_blank" href="http://i13websolution.com/wordpress-responsive-photo-gallery-pro-plugin.html">UPGRADE TO PRO VERSION</a></h3></span>
                         </div>   
                         <h2>Add Image </h2>
                         <?php } ?>
@@ -1117,19 +1100,14 @@
                                             <?php if($image_name!=""){ ?>
                                                 <div><b>Current Image : </b><a id="currImg" href="<?php echo $baseurl.$image_name; ?>" target="_new"><?php echo $image_name; ?></a></div>
                                                 <?php } ?>      
-                                            <input type="file" name="image_name" onchange="reloadfileupload();"  id="image_name" size="30" />
-                                            <div style="clear:both"></div>
-                                            <div></div>
-                                            <div class="uploader">
-                                                <br/>
-                                                <b style="margin-left: 50px;">OR</b><div style="clear: both;margin-top: 15px;"></div>
-                                                <?php if(my_responsive_photo_gallery_get_wp_version()>=3.5){ ?>
-                                                    <a href="javascript:;" class="niks_media" id="myMediaUploader"><b>Use WordPress Media Uploader</b></a>
-                                                    <?php }?>  
-                                                <input id="HdnMediaSelection" name="HdnMediaSelection" type="hidden" value="" />
-                                                <br/>
-                                            </div>  
-                                            <?php if(my_responsive_photo_gallery_get_wp_version()>=3.5){ ?>
+                                            
+                                                <div class="uploader">
+                                                  
+                                                        <a href="javascript:;" class="niks_media" id="myMediaUploader"><b>Click Here to upload</b></a>
+                                                        <input id="HdnMediaSelection" name="HdnMediaSelection" type="hidden" value="" />
+                                                    <br/>
+                                                </div>  
+                                             
                                                 <script>
                                                     var $n = jQuery.noConflict();  
                                                     $n(document).ready(function() {
@@ -1236,7 +1214,7 @@
                                                             });
                                                     })
                                                 </script>
-                                                <?php } ?> 
+                                                
                                         </div>
                                     </div>
                                     <div class="stuffbox" id="namediv" style="width:100%">
@@ -1261,10 +1239,11 @@
                                     </div>
                                     
                                     <?php if(isset($_GET['id']) and $_GET['id']>0){ ?> 
-                                        <input type="hidden" name="imageid" id="imageid" value="<?php echo $_GET['id'];?>">
+                                        <input type="hidden" name="imageid" id="imageid" value="<?php echo htmlentities(strip_tags($_GET['id']),ENT_QUOTES);?>">
                                         <?php
                                         } 
                                     ?>
+                                     <?php wp_nonce_field('action_image_add_edit','add_edit_image_nonce'); ?>       
                                     <input type="submit" onclick="return validateFile();" name="btnsave" id="btnsave" value="Save Changes" class="button-primary">&nbsp;&nbsp;<input type="button" name="cancle" id="cancle" value="Cancel" class="button-primary" onclick="location.href='admin.php?page=responsive_photo_gallery_image_management'">
 
                                 </form> 
@@ -1295,60 +1274,20 @@
                                             })
                                     });
 
-                                      function validateFile(){
+                                     function validateFile(){
 
                                         var $n = jQuery.noConflict();  
-                                        if($n('#currImg').length>0 || $n.trim($n("#HdnMediaSelection").val())!=""){
+                                        if($n('#currImg').length>0 || $n.trim($n("#HdnMediaSelection").val())!="" ){
                                             return true;
                                         }
-                                        var fragment = $n("#image_name").val();
-                                        var filename = $n("#image_name").val().replace(/.+[\\\/]/, "");  
-                                        var imageid=$n("#image_name").val();
-
-                                        if(imageid==""){
-
-                                            if(filename!="")
-                                                return true;
-                                            else
-                                                {
-                                                $n("#err_daynamic").remove();
-                                                $n("#image_name").after('<label class="image_error" id="err_daynamic">Please select file.</label>');
-                                                return false;  
-                                            } 
-                                        }
-                                        else{
-                                            return true;
-                                        }      
-                                    }
-                                    function reloadfileupload(){
-
-                                        var $n = jQuery.noConflict();  
-                                        var fragment = $n("#image_name").val();
-                                        var filename = $n("#image_name").val().replace(/.+[\\\/]/, "");
-                                        var validExtensions=new Array();
-                                        validExtensions[0]='jpg';
-                                        validExtensions[1]='jpeg';
-                                        validExtensions[2]='png';
-                                        validExtensions[3]='gif';
-
-                                        var extension = filename.substr( (filename.lastIndexOf('.') +1) ).toLowerCase();
-
-                                        var inarr=parseInt($n.inArray( extension, validExtensions));
-
-                                        if(inarr<0){
-
+                                        else
+                                            {
                                             $n("#err_daynamic").remove();
-                                            $n('#fileuploaddiv').html($n('#fileuploaddiv').html());   
-                                            $n("#image_name").after('<label class="image_error" id="err_daynamic">Invalid file extension</label>');
-
-                                        }
-                                        else{
-                                            $n("#err_daynamic").remove();
-
+                                            $n("#myMediaUploader").after('<br/><label class="image_error" id="err_daynamic">Please select file.</label>');
+                                            return false;  
                                         } 
-
-
-                                    } 
+                                            
+                                    }
                                 </script> 
 
                             </div>
@@ -1357,7 +1296,7 @@
 					          <div class="postbox"> 
 					              <h3 class="hndle"><span></span>Access All Themes In One Price</h3> 
 					              <div class="inside">
-					                  <center><a href="http://www.elegantthemes.com/affiliates/idevaffiliate.php?id=11715_0_1_10" target="_blank"><img border="0" src="http://www.elegantthemes.com/affiliates/banners/300x250.gif" width="250" height="250"></a></center>
+					                  <center><a href="http://www.elegantthemes.com/affiliates/idevaffiliate.php?id=11715_0_1_10" target="_blank"><img border="0" src="<?php echo plugins_url( 'images/300x250.gif', __FILE__ );?>" width="250" height="250"></a></center>
 					
 					                  <div style="margin:10px 5px">
 					
@@ -1367,7 +1306,7 @@
 					              <h3 class="hndle"><span></span>Recommended WordPress Hostings</h3> 
 					              
 					              <div class="inside">
-					                   <center><a href="http://secure.hostgator.com/~affiliat/cgi-bin/affiliates/clickthru.cgi?id=nik00726-hs-wp"><img src="http://tracking.hostgator.com/img/WordPress_Hosting/300x250-animated.gif" width="250" height="250" border="0"></a></center>
+					                   <center><a href="http://secure.hostgator.com/~affiliat/cgi-bin/affiliates/clickthru.cgi?id=nik00726-hs-wp"><img src="<?php echo plugins_url( 'images/300x250-animated.gif', __FILE__ );?>" width="250" height="250" border="0"></a></center>
 					                  <div style="margin:10px 5px">
 					                  </div>
 					              </div></div>
@@ -1386,8 +1325,22 @@
 
         else if(strtolower($action)==strtolower('delete')){
 
+            
+             $retrieved_nonce = '';
+            
+            if(isset($_GET['nonce']) and $_GET['nonce']!=''){
+              
+                $retrieved_nonce=$_GET['nonce'];
+                
+            }
+            if (!wp_verify_nonce($retrieved_nonce, 'delete_image' ) ){
+        
+                
+                wp_die('Security check fail'); 
+            }
+            
             $location='admin.php?page=responsive_photo_gallery_image_management';
-            $deleteId=(int)$_GET['id'];
+            $deleteId=(int) htmlentities(strip_tags($_GET['id']),ENT_QUOTES);
 
             try{
 
@@ -1397,10 +1350,9 @@
 
                 if(is_object($myrow)){
 
-                    $image_name=stripslashes($myrow->image_name);
+                    $image_name=$myrow->image_name;
                     $wpcurrentdir=dirname(__FILE__);
                     $wpcurrentdir=str_replace("\\","/",$wpcurrentdir);
-                    $imagename=$_FILES["image_name"]["name"];
                     $imagetoDel=$pathToImagesFolder.'/'.$image_name;
                     @unlink($imagetoDel);
 
@@ -1428,6 +1380,12 @@
         }  
         else if(strtolower($action)==strtolower('deleteselected')){
 
+            if(!check_admin_referer('action_settings_mass_delete','mass_delete_nonce')){
+               
+                wp_die('Security check fail'); 
+            }
+            
+            
             $location='admin.php?page=responsive_photo_gallery_image_management'; 
             if(isset($_POST) and isset($_POST['deleteselected']) and  ( $_POST['action']=='delete' or $_POST['action_upper']=='delete')){
 
@@ -1445,10 +1403,9 @@
 
                             if(is_object($myrow)){
 
-                                $image_name=stripslashes($myrow->image_name);
+                                $image_name=$myrow->image_name;
                                 $wpcurrentdir=dirname(__FILE__);
                                 $wpcurrentdir=str_replace("\\","/",$wpcurrentdir);
-                                $imagename=$_FILES["image_name"]["name"];
                                 $imagetoDel=$pathToImagesFolder.'/'.$image_name;
                                 @unlink($imagetoDel);
                                 $query = "delete from  ".$wpdb->prefix."gv_responsive_slider where id=$img";
@@ -1496,7 +1453,7 @@
     <div style="">  
         <div style="">
             <br/>
-            <span><h3 style="color: blue;"><a target="_blank" href="http://www.i13websolution.com/wordpress-pro-plugins/wordpress-responsive-photo-gallery-pro-plugin.html">UPGRADE TO PRO VERSION</a></h3></span>
+            <span><h3 style="color: blue;"><a target="_blank" href="http://i13websolution.com/wordpress-responsive-photo-gallery-pro-plugin.html">UPGRADE TO PRO VERSION</a></h3></span>
             <div class="wrap">
                 <h2>Slider Preview</h2>
                 <br>
